@@ -1,0 +1,19 @@
+.container {
+  /* color: var(--text-color); */
+  padding: 0 1rem 1rem 1rem;
+  background-color: var(--background-color);
+  height: 100vh;
+}
+
+.list {
+  py: 0;
+  width: 100%;
+  border-radius: 2px;
+  border: 1px solid;
+  border-color: divider;
+  background-color: var(--foreground-color);
+}
+
+.danger {
+  color: var(--text-danger-color);
+}

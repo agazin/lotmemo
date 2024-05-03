@@ -4,8 +4,18 @@
 
 :root {
   --foreground-rgb: 0, 0, 0;
+  --foreground-color: rgb(70, 69, 69);
+  --foreground-2-color: rgb(110, 110, 110);
+  --background-color: black;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+  --text-color: white;
+  --text-button-color: black;
+  --text-active-color: rgb(233, 218, 11);
+  --text-button-inactive-color: rgb(78, 78, 78);
+  --button-primar-color: rgb(233, 218, 11);
+  --button-inactive-color: rgb(34, 34, 33);
+  --text-danger-color: red;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -13,6 +23,7 @@
     --foreground-rgb: 255, 255, 255;
     --background-start-rgb: 0, 0, 0;
     --background-end-rgb: 0, 0, 0;
+    --text-color: white;
   }
 }
 
@@ -30,4 +41,23 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+/* MUI */
+.MuiTab-textColorPrimary {
+  color: var(--text-color) !important;
+}
+.Mui-selected {
+  color: var(--text-active-color) !important;
+}
+.MuiTabs-indicator {
+  background-color: var(--text-active-color) !important;
+}
+/* .MuiButton-root {
+  color: var(--text-color) !important;
+  background-color: var(--button-primar-color) !important;
+} */
+
+.Mui-focused {
+  border-color: red !important;
 }

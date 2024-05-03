@@ -1,0 +1,131 @@
+.container {
+  color: var(--text-color);
+  background-color: black;
+  height: 100vh;
+}
+
+.modal{
+  z-index: 1;
+  /* center */
+  position: absolute;
+  width: 90%;
+  height: 90%;
+  overflow: auto;
+  background-color: rgba(255, 255, 255);
+
+}
+.confirmBtn {
+  background-color: var(--button-primar-color);
+  color: var(--text-button-color);
+  border: none;
+  border-radius: 5px;
+  padding: 0.5rem;
+  margin-right: 1rem;
+  text-align: center;
+  cursor: pointer;
+}
+
+.deleteBtn {
+  color: var(--text-danger-color);
+  text-align: center;
+  cursor: pointer;
+  vertical-align: middle;
+  padding-left: 10px;
+  display: none;
+}
+
+.title {
+  border: 1px solid var(--foreground-color);
+  border-radius: 5px;
+  display: flex;
+  background-color: var(--foreground-color);
+}
+
+.period {
+  flex: 1;
+  text-align: left;
+  margin: 1rem;
+}
+
+.countdown {
+  margin: 1rem;
+  flex: 1;
+  text-align: right;
+}
+
+.panels {
+  /* border: 1px solid var(--foreground-color); */
+  display: flex;
+}
+
+.panel {
+  background-color: var(--foreground-color);
+  border-radius: 5px;
+  padding: 1rem;
+}
+
+.simulate {
+  flex: 1;
+  text-align: center;
+  margin: 1rem 0;
+  background-color: var(--foreground-color);
+  border-radius: 5px;
+  padding: 1rem 0 1rem  1rem;
+  max-height: calc(100vh - 5.7rem);
+  /* overflow: auto; */
+  overflow: hidden;
+}
+.simContent {
+  padding-right: 1rem;
+}
+
+.tool {
+  flex: 4;
+  text-align: left;
+  margin: 1rem 0 1rem 1rem;
+  /* padding: 1rem; */
+}
+.buttonGroup {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 1rem;
+}
+
+.button {
+  background-color: var(--button-primar-color);
+  color: var(--text-button-color);
+  border: none;
+  border-radius: 5px;
+  padding: 0.5rem;
+  text-align: center;
+  flex: 1;
+  cursor: pointer;
+}
+
+.buttonInactive {
+  background-color: var(--button-inactive-color);
+  color: var(--text-button-inactive-color);
+  border: none;
+  border-radius: 5px;
+  padding: 0.5rem;
+  text-align: center;
+  flex: 1;
+  cursor: pointer;
+}
+
+
+.simItem{
+  display: flex;
+  justify-content: space-between;
+}
+
+.simNumber {
+  flex: 1;
+  text-align: left;
+}
+
+.simAmt{
+  flex: 1;
+  text-align: right;
+}
