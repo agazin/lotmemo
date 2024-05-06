@@ -77,6 +77,17 @@ const Tool = ({ addCustomer }) => {
     setTypeUp(false);
     setTypeDown(false);
     setTypeSuffle(false);
+    resetInput();
+  };
+  
+  const resetInput = () => {
+    setN(-1);
+    setAmt(-1);
+    setUnitFrom({
+      ...unitFrom,
+      n: -1,
+      amt: -1,
+    });
   };
   const handleTypeUpClick = (activeTab) => {
     const modes = unitFrom[unitActive].modes || [];
@@ -159,10 +170,13 @@ const Tool = ({ addCustomer }) => {
     });
   };
 
-  const handleBid = (unitFrom) => {
+  const handleBid = (unitFrom) => { 
     // const { uppers, lowers } = calculateBid(unitFrom, unitActive);
     // if (uppers) setUpperList([...upperList.concat(uppers)]);
     // if (lowers) setLowerList([...lowerList.concat(lowers)]);
+    if(unitFrom.unitFrom?.n < 0 || unitFrom.unitFrom?.amt < 0){
+      return;
+    }
     const modes = [...(unitFrom.unitFrom[unitActive].modes || [])];
     const unit = {
       unitFrom: {
@@ -178,6 +192,7 @@ const Tool = ({ addCustomer }) => {
     // }
     setLotList(lots);
     recalulateBid(lots);
+    resetInput();
   };
 
   function recalulateBid(lotList) {
@@ -198,6 +213,16 @@ const Tool = ({ addCustomer }) => {
 
   function onConfirm() {
     addCustomer(lotList);
+    clearToolContent();
+    handleClose();
+  }
+
+  function clearToolContent(){
+    setUpperList([]);
+    setLowerList([]);
+    setLotList([]);
+    resetInput();
+    // handleChange(null, unitActive);
   }
 
   function getCounting() {
@@ -334,7 +359,7 @@ const Tool = ({ addCustomer }) => {
               </TableBody>
             </Table>
           </TableContainer>
-          <div className={styles.confirmBtn}  >
+          <div className={styles.confirmBtn} onClick={ () => onConfirm()}  >
             ยืนยัน
           </div>
         </Box>
