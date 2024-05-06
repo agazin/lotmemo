@@ -35,6 +35,7 @@ import {
   PlusOneOutlined,
 } from "@mui/icons-material";
 import { enumType, calculateBid } from "@/app/memo/page";
+import { CheckCircleIcon,RepeatOutlined } from '@mui/icons-material';
 
 const Tool = ({ addCustomer }) => {
   // const enumType = {
@@ -79,7 +80,7 @@ const Tool = ({ addCustomer }) => {
     setTypeSuffle(false);
     resetInput();
   };
-  
+
   const resetInput = () => {
     setN(-1);
     setAmt(-1);
@@ -170,13 +171,23 @@ const Tool = ({ addCustomer }) => {
     });
   };
 
-  const handleBid = (unitFrom) => { 
+  const handleBid = (unitFrom) => {
     // const { uppers, lowers } = calculateBid(unitFrom, unitActive);
     // if (uppers) setUpperList([...upperList.concat(uppers)]);
     // if (lowers) setLowerList([...lowerList.concat(lowers)]);
-    if(unitFrom.unitFrom?.n < 0 || unitFrom.unitFrom?.amt < 0){
+    //check input n and amt
+    if (unitFrom.unitFrom?.n < 0 || unitFrom.unitFrom?.amt < 0) {
       return;
     }
+    //check mode selected
+    if(unitFrom.unitFrom[unitActive].modes.length == 0) {
+      return;
+    }
+    //check active tab 
+    if(unitFrom.unitFrom.n.length != unitActive) {
+      return;
+    }
+
     const modes = [...(unitFrom.unitFrom[unitActive].modes || [])];
     const unit = {
       unitFrom: {
@@ -203,7 +214,7 @@ const Tool = ({ addCustomer }) => {
       const { uppers: u, lowers: l } = calculateBid({
         unitFrom: unit.unitFrom,
         unitActive: unit.unitActive
-    });
+      });
       if (u) uppers = [...uppers.concat(u)];
       if (l) lowers = [...lowers.concat(l)];
     });
@@ -217,7 +228,7 @@ const Tool = ({ addCustomer }) => {
     handleClose();
   }
 
-  function clearToolContent(){
+  function clearToolContent() {
     setUpperList([]);
     setLowerList([]);
     setLotList([]);
@@ -299,7 +310,12 @@ const Tool = ({ addCustomer }) => {
           >
             x
           </div>
-          <TableContainer component={Paper} sx={{ maxHeight: '100%' }}>
+          <TableContainer component={Paper} 
+            sx={{ 
+              minHeight: 'calc(100% - 20px)', 
+              maxHeight: 'calc(100% - 20px)',
+              overflowY: 'auto',
+            }}>
             <Table sx={{ minWidth: 650 }} aria-label="sticky table" stickyHeader>
               <TableHead>
                 <TableRow>
@@ -323,21 +339,21 @@ const Tool = ({ addCustomer }) => {
                     </TableCell>
                     <TableCell align="center">
                       {row.unitFrom[row.unitActive].modes?.includes(enumType.UP)
-                        ? "O"
+                        ? <CheckCircleIcon htmlColor="rgb(67, 253, 113)" />
                         : "-"}
                     </TableCell>
                     <TableCell align="center">
                       {row.unitFrom[row.unitActive].modes?.includes(
                         enumType.DOWN
                       )
-                        ? "O"
+                        ? <CheckCircleIcon htmlColor="rgb(67, 253, 113)" />
                         : "-"}
                     </TableCell>
                     <TableCell align="center">
                       {row.unitFrom[row.unitActive].modes?.includes(
                         enumType.REVERSE
                       )
-                        ? "O"
+                        ? <CheckCircleIcon htmlColor="rgb(67, 253, 113)" />
                         : "-"}
                     </TableCell>
                     <TableCell align="right">{row.unitFrom.n}</TableCell>
@@ -359,7 +375,7 @@ const Tool = ({ addCustomer }) => {
               </TableBody>
             </Table>
           </TableContainer>
-          <div className={styles.confirmBtn} onClick={ () => onConfirm()}  >
+          <div className={styles.confirmBtn} onClick={() => onConfirm()}  >
             ยืนยัน
           </div>
         </Box>
@@ -490,7 +506,7 @@ const Tool = ({ addCustomer }) => {
                   className={reverse ? styles.button : styles.buttonInactive}
                   onClick={() => handleTypeReverseClick()}
                 >
-                  <AddCircle /> กลับเลข
+                  <RepeatOutlined /> กลับเลข <RepeatOutlined />
                 </div>
               </div>
             </Box>
@@ -528,7 +544,7 @@ const Tool = ({ addCustomer }) => {
             </Box>
             <Box>
               <div className={styles.buttonGroup}>
-                <div className={styles.buttonInactive} onClick={() => {}}>
+                <div className={styles.buttonInactive} onClick={() => { }}>
                   <Delete /> เคลียร์
                 </div>
                 <div
