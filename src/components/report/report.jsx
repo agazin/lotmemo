@@ -7,7 +7,8 @@ import Divider from "@mui/material/Divider";
 import { calculateBid } from "@/app/memo/page";
 import { use, useEffect, useState } from "react";
 
-export default function ReportPage({ lotmemo }) {
+export default function ReportPage({ lotmemo, tempCustomer }) {
+  console.log('ReportPage tempCustomer', lotmemo);
   const [fresult, setFresult] = useState();
   // const style = {
   //   py: 0,

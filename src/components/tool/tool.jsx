@@ -26,18 +26,16 @@ import {
 import styles from "./tool.module.css";
 import React, { use, useEffect } from "react";
 import {
-  AddCircle,
   AddShoppingCart,
-  ArrowUpward,
-  ArrowUpwardRounded,
   Delete,
-  Height,
-  PlusOneOutlined,
+  CheckCircle,
+  RepeatOutlined
 } from "@mui/icons-material";
 import { enumType, calculateBid } from "@/app/memo/page";
-import { CheckCircleIcon,RepeatOutlined } from '@mui/icons-material';
+import Divider from '@mui/material/Divider';
 
-const Tool = ({ addCustomer }) => {
+
+const Tool = ({ addCustomer,setTempCustomer }) => {
   // const enumType = {
   //   UP: "UP",
   //   DOWN: "DOWN",
@@ -201,6 +199,8 @@ const Tool = ({ addCustomer }) => {
     // for (let i = 0; i < 10; i++) {
     //   lots.push(lot[0]);
     // }
+    console.log("lots", {...{ customer: "temp", lotList: lots }});
+    setTempCustomer({...{ customer: "temp", lotList: lots }});
     setLotList(lots);
     recalulateBid(lots);
     resetInput();
@@ -223,6 +223,7 @@ const Tool = ({ addCustomer }) => {
   }
 
   function onConfirm() {
+    console.log("confirm", lotList);
     addCustomer(lotList);
     clearToolContent();
     handleClose();
@@ -339,21 +340,21 @@ const Tool = ({ addCustomer }) => {
                     </TableCell>
                     <TableCell align="center">
                       {row.unitFrom[row.unitActive].modes?.includes(enumType.UP)
-                        ? <CheckCircleIcon htmlColor="rgb(67, 253, 113)" />
+                        ? <CheckCircle htmlColor="rgb(67, 253, 113)" />
                         : "-"}
                     </TableCell>
                     <TableCell align="center">
                       {row.unitFrom[row.unitActive].modes?.includes(
                         enumType.DOWN
                       )
-                        ? <CheckCircleIcon htmlColor="rgb(67, 253, 113)" />
+                        ? <CheckCircle htmlColor="rgb(67, 253, 113)" />
                         : "-"}
                     </TableCell>
                     <TableCell align="center">
                       {row.unitFrom[row.unitActive].modes?.includes(
                         enumType.REVERSE
                       )
-                        ? <CheckCircleIcon htmlColor="rgb(67, 253, 113)" />
+                        ? <CheckCircle htmlColor="rgb(67, 253, 113)" />
                         : "-"}
                     </TableCell>
                     <TableCell align="right">{row.unitFrom.n}</TableCell>
@@ -389,7 +390,12 @@ const Tool = ({ addCustomer }) => {
           <div className={styles.confirmBtn} onClick={handleOpen}>
             {getCounting()} รายการ
           </div>
-          <div style={{ color: "var(--text-active-color)" }}>------------</div>
+          <Divider color="black"  variant="middle" flexItem sx={{
+            width: '80%',
+            height: '1px',
+            backgroundColor: 'black',
+            margin: '1rem 0'
+          }}/>
           <PerfectScrollbar>
             <div className={styles.simContent}>
               <div>

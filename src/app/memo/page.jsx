@@ -2,7 +2,8 @@
 import styles from "./memo.module.css";
 import Tool from "@/components/tool/tool";
 import ReportPage from "@/components/report/report";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { Button } from "@mui/material";
 
 export const enumType = {
   UP: "UP",
@@ -49,7 +50,7 @@ export const calculateBid = ({ unitFrom, unitActive }) => {
     });
     upperList.push(...shuffleList);
   }
-  return { uppers : upperList, lowers :lowerList };
+  return { uppers: upperList, lowers: lowerList };
 };
 
 export function getPermutations(nums) {
@@ -81,14 +82,47 @@ export default function MemoPage() {
     memoList: [],
   });
 
-  const addCustomer = (lotList) => {
-    console.log("addCustomer", lotList); 
+  // temp customer
+  const [tempCustomer, setTempCustomer] = React.useState({
+    customer: "temp",
+    lotList: [
+    ],
+  });
+  useEffect(() => {
+    // lotmemo.memoList.find((item) => {
+    //   if (item.customer === tempCustomer.customer) {
+    //     item.lotList = tempCustomer.lotList;
+    //   }
+    // });
+    console.log("tempCustomer", tempCustomer);
+    //set by replace the tempCustomer to the lotmemo
+    const memoList = lotmemo
+                      .memoList
+                      .filter((item) => item.customer !== tempCustomer.customer);
+
     setLotmemo({
       ...lotmemo,
       memoList: [
-        ...lotmemo.memoList ,
+        ...memoList,
         {
-          customer: "customer"+(lotmemo.memoList.length+1),
+          customer: tempCustomer.customer,
+          lotList: tempCustomer.lotList,
+        },
+      ],  
+    });
+  }, [tempCustomer]);
+
+
+  const addCustomer = (lotList) => {
+    console.log("addCustomer", lotList);
+    const memoList = lotmemo.memoList
+                      .filter((item) => item.customer !== tempCustomer.customer);  
+    setLotmemo({
+      ...lotmemo,
+      memoList: [
+        ...memoList,
+        {
+          customer: "customer" + (lotmemo.memoList.length + 1),
           lotList: lotList,
         },
       ],
@@ -98,10 +132,10 @@ export default function MemoPage() {
   return (
     <div className={styles.container}>
       <div className={styles.tool}>
-        <Tool addCustomer={addCustomer} />
+        <Tool addCustomer={addCustomer} setTempCustomer={setTempCustomer} />
       </div>
       <div className={styles.report}>
-        <ReportPage lotmemo={lotmemo} />
+        <ReportPage lotmemo={lotmemo} tempCustomer={tempCustomer} />
       </div>
     </div>
   );
