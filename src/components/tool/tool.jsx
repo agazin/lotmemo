@@ -29,13 +29,13 @@ import {
   AddShoppingCart,
   Delete,
   CheckCircle,
-  RepeatOutlined
+  RepeatOutlined,
+  ModeEdit,
 } from "@mui/icons-material";
 import { enumType, calculateBid } from "@/app/memo/page";
-import Divider from '@mui/material/Divider';
+import Divider from "@mui/material/Divider";
 
-
-const Tool = ({ addCustomer,setTempCustomer }) => {
+const Tool = ({ addCustomer, setTempCustomer }) => {
   // const enumType = {
   //   UP: "UP",
   //   DOWN: "DOWN",
@@ -62,6 +62,7 @@ const Tool = ({ addCustomer,setTempCustomer }) => {
   const [amt, setAmt] = React.useState(-1);
   const [upperList, setUpperList] = React.useState([]);
   const [lowerList, setLowerList] = React.useState([]);
+  const [indexActive, setIndexActive] = React.useState(-1);
 
   const handleChange = (event, newValue) => {
     setUnitActive(newValue);
@@ -87,8 +88,20 @@ const Tool = ({ addCustomer,setTempCustomer }) => {
       n: -1,
       amt: -1,
     });
+    setIndexActive(-1);
   };
+
+  function resetType() {
+    setTypeUp(false);
+    setTypeDown(false);
+    setTypeSuffle(false);
+    setReverse(false);
+    const u = { ...unitFrom, [unitActive]: { modes: [] } };
+    setUnitFrom(u);
+    return u;
+  }
   const handleTypeUpClick = (activeTab) => {
+    const unitFrom = resetType();
     const modes = unitFrom[unitActive].modes || [];
     if (typeUp) {
       const index = modes.indexOf(enumType.UP);
@@ -101,6 +114,7 @@ const Tool = ({ addCustomer,setTempCustomer }) => {
     setUnitFrom(u);
   };
   const handleTypeDownClick = () => {
+    const unitFrom = resetType();
     const modes = unitFrom[unitActive].modes || [];
     if (typeDown) {
       const index = modes.indexOf(enumType.DOWN);
@@ -130,6 +144,7 @@ const Tool = ({ addCustomer,setTempCustomer }) => {
   };
 
   const handleTypeSuffleClick = () => {
+    const unitFrom = resetType();
     const modes = unitFrom[unitActive].modes || [];
     if (modes.includes(enumType.SUFFLE)) {
       const index = modes.indexOf(enumType.SUFFLE);
@@ -170,6 +185,7 @@ const Tool = ({ addCustomer,setTempCustomer }) => {
   };
 
   const handleBid = (unitFrom) => {
+    console.log("unitFrom", unitFrom);
     // const { uppers, lowers } = calculateBid(unitFrom, unitActive);
     // if (uppers) setUpperList([...upperList.concat(uppers)]);
     // if (lowers) setLowerList([...lowerList.concat(lowers)]);
@@ -178,11 +194,11 @@ const Tool = ({ addCustomer,setTempCustomer }) => {
       return;
     }
     //check mode selected
-    if(unitFrom.unitFrom[unitActive].modes.length == 0) {
+    if (unitFrom.unitFrom[unitActive].modes.length == 0) {
       return;
     }
-    //check active tab 
-    if(unitFrom.unitFrom.n.length != unitActive) {
+    //check active tab
+    if (unitFrom.unitFrom.n.length != unitActive) {
       return;
     }
 
@@ -192,28 +208,50 @@ const Tool = ({ addCustomer,setTempCustomer }) => {
         ...{ ...unitFrom.unitFrom, [unitActive]: { modes: modes } },
       },
       unitActive: unitActive,
-    };
-    const lots = [...lotList.concat(unit)];
+    }; // { unitFrom: { n: 123, amt: 100, 2: { modes: [UP] } }, unitActive: 2 }
+    if (indexActive >= 0) {
+      lotList[indexActive] = unit;
+      setIndexActive(-1);
+    } else {
+      lotList.push(unit);
+    }
+    const lots = [...lotList];
     // //add more 10 lots
     // const lot = lots.slice(0, 1);
     // for (let i = 0; i < 10; i++) {
     //   lots.push(lot[0]);
     // }
-    console.log("lots", {...{ customer: "temp", lotList: lots }});
-    setTempCustomer({...{ customer: "temp", lotList: lots }});
+    setTempCustomer({ ...{ customer: "temp", lotList: lots } });
     setLotList(lots);
     recalulateBid(lots);
     resetInput();
+    const input = document.getElementById("outlined-adornment-number");
+    input.select();
   };
 
+  function handleEditRowClick(index) {
+    const unit = lotList[index];
+    setIndexActive(index);
+    setUnitActive(unit.unitActive);
+    setUnitFrom(unit.unitFrom);
+    setN(unit.unitFrom.n);
+    setAmt(unit.unitFrom.amt);
+    const modes = unit.unitFrom[unit.unitActive].modes || [];
+    setTypeUp(modes.includes(enumType.UP));
+    setTypeDown(modes.includes(enumType.DOWN));
+    setTypeSuffle(modes.includes(enumType.SUFFLE));
+    setReverse(modes.includes(enumType.REVERSE));
+    const input = document.getElementById("outlined-adornment-amount");
+    input.select();
+  }
+
   function recalulateBid(lotList) {
-    console.log("recalulateBid", lotList);
     let uppers = [];
     let lowers = [];
     lotList.forEach((unit) => {
       const { uppers: u, lowers: l } = calculateBid({
         unitFrom: unit.unitFrom,
-        unitActive: unit.unitActive
+        unitActive: unit.unitActive,
       });
       if (u) uppers = [...uppers.concat(u)];
       if (l) lowers = [...lowers.concat(l)];
@@ -223,7 +261,6 @@ const Tool = ({ addCustomer,setTempCustomer }) => {
   }
 
   function onConfirm() {
-    console.log("confirm", lotList);
     addCustomer(lotList);
     clearToolContent();
     handleClose();
@@ -257,7 +294,7 @@ const Tool = ({ addCustomer,setTempCustomer }) => {
   }
 
   function handleDeleteRowClick(index) {
-    console.log("delete ", index);
+    // console.log("delete ", index);
   }
 
   function handleDeleteRowClick(index) {
@@ -288,8 +325,21 @@ const Tool = ({ addCustomer,setTempCustomer }) => {
     boxShadow: 24,
     p: 4,
   };
+
+  function getModeLabel(modes) {
+    if (modes.includes(enumType.UP) && modes.includes(enumType.DOWN)) {
+      return "บน/ล่าง";
+    } else if (modes.includes(enumType.UP)) {
+      return "บน";
+    } else if (modes.includes(enumType.DOWN)) {
+      return "ล่าง";
+    } else if (modes.includes(enumType.SUFFLE)) {
+      return "โต๊ด";
+    }
+    return "";
+  }
   return (
-    <div className={styles.container}>
+    <div>
       <Modal
         sx={style}
         open={open}
@@ -311,19 +361,25 @@ const Tool = ({ addCustomer,setTempCustomer }) => {
           >
             x
           </div>
-          <TableContainer component={Paper} 
-            sx={{ 
-              minHeight: 'calc(100% - 20px)', 
-              maxHeight: 'calc(100% - 20px)',
-              overflowY: 'auto',
-            }}>
-            <Table sx={{ minWidth: 650 }} aria-label="sticky table" stickyHeader>
+          <TableContainer
+            component={Paper}
+            sx={{
+              minHeight: "calc(100% - 20px)",
+              maxHeight: "calc(100% - 20px)",
+              overflowY: "auto",
+            }}
+          >
+            <Table
+              sx={{ minWidth: 650 }}
+              aria-label="sticky table"
+              stickyHeader
+            >
               <TableHead>
                 <TableRow>
                   <TableCell>ประเภท</TableCell>
                   <TableCell align="center">บน</TableCell>
                   <TableCell align="center">ล่าง</TableCell>
-                  <TableCell align="center">กลับเลข</TableCell>
+                  {/* <TableCell align="center">กลับเลข</TableCell> */}
                   <TableCell align="right">เลข</TableCell>
                   <TableCell align="right">ราคา</TableCell>
                   <TableCell align="center">action</TableCell>
@@ -339,24 +395,30 @@ const Tool = ({ addCustomer,setTempCustomer }) => {
                       {row.unitActive} ตัว
                     </TableCell>
                     <TableCell align="center">
-                      {row.unitFrom[row.unitActive].modes?.includes(enumType.UP)
-                        ? <CheckCircle htmlColor="rgb(67, 253, 113)" />
-                        : "-"}
+                      {row.unitFrom[row.unitActive].modes?.includes(
+                        enumType.UP
+                      ) ? (
+                        <CheckCircle htmlColor="rgb(67, 253, 113)" />
+                      ) : (
+                        "-"
+                      )}
                     </TableCell>
                     <TableCell align="center">
                       {row.unitFrom[row.unitActive].modes?.includes(
                         enumType.DOWN
-                      )
-                        ? <CheckCircle htmlColor="rgb(67, 253, 113)" />
-                        : "-"}
+                      ) ? (
+                        <CheckCircle htmlColor="rgb(67, 253, 113)" />
+                      ) : (
+                        "-"
+                      )}
                     </TableCell>
-                    <TableCell align="center">
+                    {/* <TableCell align="center">
                       {row.unitFrom[row.unitActive].modes?.includes(
                         enumType.REVERSE
                       )
                         ? <CheckCircle htmlColor="rgb(67, 253, 113)" />
                         : "-"}
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell align="right">{row.unitFrom.n}</TableCell>
                     <TableCell align="right">{row.unitFrom.amt}</TableCell>
                     <TableCell align="center">
@@ -376,7 +438,7 @@ const Tool = ({ addCustomer,setTempCustomer }) => {
               </TableBody>
             </Table>
           </TableContainer>
-          <div className={styles.confirmBtn} onClick={() => onConfirm()}  >
+          <div className={styles.confirmBtn} onClick={() => onConfirm()}>
             ยืนยัน
           </div>
         </Box>
@@ -386,52 +448,6 @@ const Tool = ({ addCustomer,setTempCustomer }) => {
         <div className={styles.countdown}>146:10:35</div>
       </div>
       <div className={styles.panels}>
-        <div className={styles.simulate}>
-          <div className={styles.confirmBtn} onClick={handleOpen}>
-            {getCounting()} รายการ
-          </div>
-          <Divider color="black"  variant="middle" flexItem sx={{
-            width: '80%',
-            height: '1px',
-            backgroundColor: 'black',
-            margin: '1rem 0'
-          }}/>
-          <PerfectScrollbar>
-            <div className={styles.simContent}>
-              <div>
-                {upperList && upperList.length > 0 && <div>[บน]</div>}
-                {upperList &&
-                  upperList.map((item, index) => (
-                    <div
-                      key={`up-${index}`}
-                      className={styles.simItem}
-                      onMouseOver={handleHoverOnDelete}
-                      onMouseOut={handleHoverOutDelete}
-                    >
-                      <div className={styles.simNumber}>{item.n}</div>
-                      <div className={styles.simAmt}>{item.amt}</div>
-                      <div
-                        className={styles.deleteBtn}
-                        onClick={(e) => handleDeleteRowClick(`up-${index}`)}
-                      >
-                        x
-                      </div>
-                    </div>
-                  ))}
-              </div>
-              <div>
-                {lowerList && lowerList.length > 0 && <div>[ล่าง]</div>}
-                {lowerList &&
-                  lowerList.map((item, index) => (
-                    <div key={`down-${index}`} className={styles.simItem}>
-                      <div className={styles.simNumber}>{item.n}</div>
-                      <div className={styles.simAmt}>{item.amt}</div>
-                    </div>
-                  ))}
-              </div>
-            </div>
-          </PerfectScrollbar>
-        </div>
         <div className={styles.tool}>
           <Container className={styles.panel}>
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -505,7 +521,7 @@ const Tool = ({ addCustomer,setTempCustomer }) => {
               </div>
             </Box>
           </Container>
-          <Container className={styles.panel} style={{ marginTop: "1rem" }}>
+          {/* <Container className={styles.panel} style={{ marginTop: "1rem" }}>
             <Box>
               <div className={styles.content}>
                 <div
@@ -516,7 +532,7 @@ const Tool = ({ addCustomer,setTempCustomer }) => {
                 </div>
               </div>
             </Box>
-          </Container>
+          </Container> */}
           <Container className={styles.panel} style={{ marginTop: "1rem" }}>
             <Box>
               <FormControl sx={{ m: 1, width: "45%" }}>
@@ -530,6 +546,14 @@ const Tool = ({ addCustomer,setTempCustomer }) => {
                   value={n < 0 ? "" : n}
                   onChange={(e) => handleNumChange(e.target.value)}
                   autoComplete="off"
+                  onKeyUp={(e) => {
+                    if (e.key === "Enter") {
+                      handleBid({
+                        unitFrom: { ...unitFrom },
+                        unitActive,
+                      });
+                    }
+                  }}
                 />
               </FormControl>
               <FormControl sx={{ m: 1, width: "45%" }}>
@@ -545,12 +569,32 @@ const Tool = ({ addCustomer,setTempCustomer }) => {
                   value={amt < 0 ? "" : amt}
                   onChange={(e) => handleAmtChange(e.target.value)}
                   autoComplete="off"
+                  onKeyUp={(e) => {
+                    if (e.key === "Enter") {
+                      handleBid({
+                        unitFrom: { ...unitFrom },
+                        unitActive,
+                      });
+                    }
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Tab") {
+                      console.log("tab");
+                      e.preventDefault();
+                      const input = document.getElementById(
+                        "outlined-adornment-number"
+                      );
+                      input.select();
+                    }
+                  }}
                 />
               </FormControl>
             </Box>
             <Box>
               <div className={styles.buttonGroup}>
-                <div className={styles.buttonInactive} onClick={() => { }}>
+                <div className={styles.buttonInactive} onClick={() => {
+                  resetInput();
+                }}>
                   <Delete /> เคลียร์
                 </div>
                 <div
@@ -567,6 +611,145 @@ const Tool = ({ addCustomer,setTempCustomer }) => {
               </div>
             </Box>
           </Container>
+        </div>
+        <div className={styles.simulate}>
+          <div style={{display:'flex'}}>
+            <div style={{flex: 8}}>
+              <FormControl sx={{ width: "90%"}}>
+                <InputLabel htmlFor="outlined-adornment-customer">ชื่อลูกค้า</InputLabel>
+                <OutlinedInput
+                  id="outlined-adornment-customer"
+                  label="customer"
+                  value="customer1"
+                  />
+              </FormControl>
+
+            </div>
+            <div className={styles.confirmBtn} style={{flex: 2}} onClick={handleOpen}>
+              ยืนยัน <br/> {getCounting()} รายการ
+            </div>
+          </div>
+          <Divider
+            color="black"
+            variant="middle"
+            flexItem
+            sx={{
+              width: "80%",
+              height: "1px",
+              backgroundColor: "black",
+              margin: "1rem 0",
+            }}
+          />
+          <PerfectScrollbar>
+            <div className={styles.simContent}>
+              {/* <div>
+                {upperList && upperList.length > 0 && <div>[บน]</div>}
+                {upperList &&
+                  upperList.map((item, index) => (
+                    <div
+                      key={`up-${index}`}
+                      className={styles.simItem}
+                      onMouseOver={handleHoverOnDelete}
+                      onMouseOut={handleHoverOutDelete}
+                    >
+                      <div className={styles.simNumber}>{item.n}</div>
+                      <div className={styles.simAmt}>{item.amt}</div>
+                      <div
+                        className={styles.deleteBtn}
+                        onClick={(e) => handleDeleteRowClick(`up-${index}`)}
+                      >
+                        x
+                      </div>
+                    </div>
+                  ))}
+              </div>
+              <div>
+                {lowerList && lowerList.length > 0 && <div>[ล่าง]</div>}
+                {lowerList &&
+                  lowerList.map((item, index) => (
+                    <div key={`down-${index}`} className={styles.simItem}>
+                      <div className={styles.simNumber}>{item.n}</div>
+                      <div className={styles.simAmt}>{item.amt}</div>
+                    </div>
+                  ))}
+              </div> */}
+              <TableContainer
+                component={Paper}
+                sx={{
+                  minHeight: "calc(100% - 20px)",
+                  maxHeight: "calc(100% - 20px)",
+                  overflowY: "auto",
+                }}
+              >
+                <Table aria-label="sticky table" stickyHeader>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell align="center">เลข</TableCell>
+                      <TableCell align="center">ประเภท</TableCell>
+                      <TableCell align="right">ราคา</TableCell>
+                      <TableCell align="center">action</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {lotList.map((row, index) => (
+                      <TableRow
+                        key={index}
+                        sx={
+                          (indexActive === index && {
+                            backgroundColor: "rgb(220, 220, 220)",
+                          }) || {
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }
+                        }
+                      >
+                        <TableCell align="right">{row.unitFrom.n}</TableCell>
+                        <TableCell align="right">
+                          <div style={{ display: "flex" }}>
+                            <div
+                              style={{
+                                textAlign: "left",
+                                flex: "1",
+                                paddingLeft: "10px",
+                              }}
+                            >
+                              {row.unitActive} ตัว{" "}
+                            </div>
+                            <div style={{ textAlign: "right" }}>
+                              {getModeLabel(row.unitFrom[row.unitActive].modes)}{" "}
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell align="right">
+                          <div
+                            style={{ cursor: "pointer" }}
+                            onClick={() => {
+                              handleEditRowClick(index);
+                            }}
+                          >
+                            {row.unitFrom.amt}
+                          </div>
+                        </TableCell>
+                        <TableCell align="center">
+                          <ModeEdit
+                            sx={{ cursor: "pointer", color: "blue" }}
+                            onClick={() => {
+                              handleEditRowClick(index);
+                            }}
+                          />
+                          <Delete
+                            sx={{ cursor: "pointer", color: "red" }}
+                            onClick={() => {
+                              handleDeleteRowClick(index);
+                            }}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </div>
+          </PerfectScrollbar>
         </div>
       </div>
     </div>

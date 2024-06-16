@@ -89,12 +89,6 @@ export default function MemoPage() {
     ],
   });
   useEffect(() => {
-    // lotmemo.memoList.find((item) => {
-    //   if (item.customer === tempCustomer.customer) {
-    //     item.lotList = tempCustomer.lotList;
-    //   }
-    // });
-    console.log("tempCustomer", tempCustomer);
     //set by replace the tempCustomer to the lotmemo
     const memoList = lotmemo
                       .memoList
@@ -114,7 +108,6 @@ export default function MemoPage() {
 
 
   const addCustomer = (lotList) => {
-    console.log("addCustomer", lotList);
     const memoList = lotmemo.memoList
                       .filter((item) => item.customer !== tempCustomer.customer);  
     setLotmemo({

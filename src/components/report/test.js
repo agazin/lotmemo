@@ -48,7 +48,6 @@ const a = [
 // group by uppers and lowers with n and sum amt
 // and return the result as {uppers: [{n: sum}], lowers: [{n: sum}]}
 const result = a.reduce((acc, cur) => {
-  console.log("cur", cur);
   const [item] = cur;
   const { uppers, lowers } = item;
   uppers.forEach(({ n, amt }) => {
@@ -91,4 +90,3 @@ const result = a.reduce((acc, cur) => {
 //   return acc;
 // }, {});
 
-console.log(result);

@@ -4,17 +4,17 @@
 
 :root {
   --foreground-rgb: 0, 0, 0;
-  --foreground-color: rgb(70, 69, 69);
+  --foreground-color: rgb(255, 255, 255);
   --foreground-2-color: rgb(110, 110, 110);
   --background-color: black;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
-  --text-color: white;
+  --text-color: black;
   --text-button-color: black;
-  --text-active-color: rgb(233, 218, 11);
-  --text-button-inactive-color: rgb(78, 78, 78);
-  --button-primar-color: rgb(233, 218, 11);
-  --button-inactive-color: rgb(34, 34, 33);
+  --text-active-color: rgb(59, 121, 255);
+  --text-button-inactive-color: rgb(189, 185, 185);
+  --button-primar-color: rgb(59, 121, 255);
+  --button-inactive-color: rgb(66, 66, 66);
   --text-danger-color: red;
 }
 

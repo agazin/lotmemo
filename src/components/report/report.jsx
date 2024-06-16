@@ -8,7 +8,6 @@ import { calculateBid } from "@/app/memo/page";
 import { use, useEffect, useState } from "react";
 
 export default function ReportPage({ lotmemo, tempCustomer }) {
-  console.log('ReportPage tempCustomer', lotmemo);
   const [fresult, setFresult] = useState();
   // const style = {
   //   py: 0,
@@ -28,7 +27,6 @@ export default function ReportPage({ lotmemo, tempCustomer }) {
   }
 
   useEffect(() => {
-    console.log("lotmemo", lotmemo);
     const result = lotmemo.memoList.map((memo, index) => {
       return memo.lotList?.map((lot) => {
         const unitFrom = lot.unitFrom;
@@ -64,8 +62,19 @@ export default function ReportPage({ lotmemo, tempCustomer }) {
     setFresult(fresult);
   }, [lotmemo]);
 
+  function getModeLabel(type) {
+    switch (type) {
+      case "upper":
+        return "บน";
+      case "lower":
+        return "ล่าง";
+      default:
+        return "";
+    }
+   
+  }
   return (
-    <div className={styles.container}>
+    <div>
       <div>
         <List className={styles.list}>
           {/* <ListItem>
@@ -82,15 +91,15 @@ export default function ReportPage({ lotmemo, tempCustomer }) {
           <Divider component="li" />
         </List>
       </div>
-      <div style={{color:"white"}}>สรุปรายการ</div>
+      <div style={{color:"black"}}>สรุปรายการ</div>
       <div>
         <List className={styles.list}>
           {buildTheResult(fresult).map((item, index) => (
             <div key={index}>
               <ListItem>
                 <ListItemText 
-                  className={item.amt > lotmemo.config.profitLimit ? styles.danger : styles.normal}
-                  primary={`${item.type} ${item.n} : ${item.amt}`}  />
+                  className={item.amt > lotmemo.config.lossLimit ? styles.danger : styles.normal}
+                  primary={`${getModeLabel(item.type)} ${item.n} : ${item.amt}`}  />
               </ListItem>
               <Divider />
             </div>
