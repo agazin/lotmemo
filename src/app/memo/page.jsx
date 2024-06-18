@@ -2,7 +2,7 @@
 import styles from "./memo.module.css";
 import Tool from "@/components/tool/tool";
 import ReportPage from "@/components/report/report";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { Button } from "@mui/material";
 
 export const enumType = {
@@ -108,6 +108,7 @@ export default function MemoPage() {
 
 
   const addCustomer = (lotList) => {
+    console.log("addCustomer", lotList);
     const memoList = lotmemo.memoList
                       .filter((item) => item.customer !== tempCustomer.customer);  
     setLotmemo({
@@ -125,7 +126,7 @@ export default function MemoPage() {
   return (
     <div className={styles.container}>
       <div className={styles.tool}>
-        <Tool addCustomer={addCustomer} setTempCustomer={setTempCustomer} />
+        <Tool addCustomer={addCustomer} setTempCustomer={setTempCustomer} lotmemo={lotmemo} />
       </div>
       <div className={styles.report}>
         <ReportPage lotmemo={lotmemo} tempCustomer={tempCustomer} />

@@ -1,7 +1,12 @@
 "use client";
 
-import "react-perfect-scrollbar/dist/css/styles.css";
-import PerfectScrollbar from "react-perfect-scrollbar";
+import { calculateBid, enumType } from "@/app/memo/page";
+import {
+  AddShoppingCart,
+  CheckCircle,
+  Delete,
+  ModeEdit
+} from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -19,23 +24,16 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Tabs,
-  TextField,
-  Typography,
+  Tabs
 } from "@mui/material";
-import styles from "./tool.module.css";
-import React, { use, useEffect } from "react";
-import {
-  AddShoppingCart,
-  Delete,
-  CheckCircle,
-  RepeatOutlined,
-  ModeEdit,
-} from "@mui/icons-material";
-import { enumType, calculateBid } from "@/app/memo/page";
 import Divider from "@mui/material/Divider";
+import React from "react";
+import PerfectScrollbar from "react-perfect-scrollbar";
+import "react-perfect-scrollbar/dist/css/styles.css";
+import styles from "./tool.module.css";
 
-const Tool = ({ addCustomer, setTempCustomer }) => {
+const Tool = ({ addCustomer, setTempCustomer, lotmemo }) => {
+  console.log("Tool lotmemo", lotmemo);
   // const enumType = {
   //   UP: "UP",
   //   DOWN: "DOWN",
@@ -304,7 +302,10 @@ const Tool = ({ addCustomer, setTempCustomer }) => {
   }
 
   const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
+  const handleOpen = () => {
+    // setOpen(true);
+    onConfirm();
+  };
   const handleClose = () => setOpen(false);
 
   // useEffect(() => {
@@ -445,7 +446,11 @@ const Tool = ({ addCustomer, setTempCustomer }) => {
       </Modal>
       <div className={styles.title}>
         <div className={styles.period}>งวด 01/04/2567</div>
-        <div className={styles.countdown}>146:10:35</div>
+        <div className={styles.countdown}>
+           <Button>
+             ลูกค้าทั้งหมด {lotmemo.memoList.length - 1} คน
+           </Button>
+        </div>
       </div>
       <div className={styles.panels}>
         <div className={styles.tool}>
